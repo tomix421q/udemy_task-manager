@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const serverless = require('serverless-http')
 const tasks = require('./routes/tasks');
 const connectDB = require('./db/connect');
 require('dotenv').config();
@@ -14,6 +15,7 @@ app.use(express.json())
 app.use('/api/v1/tasks', tasks)
 app.use(notFound)
 app.use(errorHandlerMiddleware)
+app.use('./netlify/functions', tasks)
 
 const port = process.env.PORT || 3000
 const start = async() => {
@@ -25,3 +27,5 @@ const start = async() => {
     }
 }
 start()
+
+module.exports.handler = serverless(app)
